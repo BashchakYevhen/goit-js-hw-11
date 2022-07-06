@@ -1,0 +1,27 @@
+@mixin flex($disp: flex, $align: center, $justify: center) {
+  display: $disp;
+  align-items: $align;
+  justify-content: $justify;
+}
+@mixin tel {
+  @media screen and(min-width:480px) {
+    @content;
+  }
+}
+
+@mixin tab {
+  @media screen and(min-width:768px) {
+    @content;
+  }
+}
+
+@mixin desc {
+  @media screen and(min-width:1200px) {
+    @content;
+  }
+}
+@mixin dpi {
+  @media (min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
+    @content;
+  }
+}
