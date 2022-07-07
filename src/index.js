@@ -8,6 +8,7 @@ import {
 import SimpleLightBox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import throttle from 'lodash.throttle';
+import ScrollMagic from 'scrollmagic';
 const form = document.querySelector('.search-form');
 const galleryEl = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
@@ -61,7 +62,6 @@ function createGallery(data) {
   amountOfSearchMessage(data);
   addGallery(data);
   lightbox.refresh();
-  console.log(resultHits);
 }
 const addGallery = data => {
   return (galleryEl.innerHTML = renderGallery(data));
@@ -82,7 +82,7 @@ export function removeLoadMoreBtn() {
 function onLoadMoreBtn(e) {
   e.preventDefault();
   page.currentPage += 1;
-  console.log(page.currentPage);
+
   sendQuery(searchValue)
     .then(data => {
       resultHits = resultHits + data.hits.length;
@@ -91,11 +91,57 @@ function onLoadMoreBtn(e) {
         removeLoadMoreBtn();
       }
       addLoadMoreGalery(data);
+      const { height: cardHeight } = document
+        .querySelector('.gallery')
+        .firstElementChild.getBoundingClientRect();
+
+      window.scrollBy({
+        top: cardHeight * 2,
+        behavior: 'smooth',
+      });
       lightbox.refresh();
-      console.log(resultHits);
     })
     .catch(error => console.log(error));
 }
 function addLoadMoreGalery(data) {
   return galleryEl.insertAdjacentHTML('beforeend', renderGallery(data));
 }
+
+// // init controller
+// var controller = new ScrollMagic.Controller();
+
+// // build scene
+// var scene = new ScrollMagic.Scene({
+//   triggerElement: '.dynamicContent #loader',
+//   triggerHook: 'onEnter',
+// })
+//   .addTo(controller)
+//   .on('enter', function (e) {
+//     if (!$('#loader').hasClass('active')) {
+//       $('#loader').addClass('active');
+//       if (console) {
+//         console.log('loading new items');
+//       }
+//       // simulate ajax call to add content using the function below
+//       setTimeout(addBoxes, 1000, 9);
+//     }
+//   });
+
+// // pseudo function to add new content. In real life it would be done through an ajax request.
+// function addBoxes(amount) {
+//   for (i = 1; i <= amount; i++) {
+//     var randomColor =
+//       '#' +
+//       ('00000' + ((Math.random() * 0xffffff) << 0).toString(16)).slice(-6);
+//     $('<div></div>')
+//       .addClass('box1')
+//       .css('background-color', randomColor)
+//       .appendTo('.dynamicContent #content');
+//   }
+//   // "loading" done -> revert to normal state
+//   scene.update(); // make sure the scene gets the new start position
+//   $('#loader').removeClass('active');
+// }
+
+// // add some boxes to start with.
+// addBoxes(40);
